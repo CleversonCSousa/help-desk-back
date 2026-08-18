@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/customer/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/technician/**").hasRole(UserRole.TECHNICIAN.name())
+                        .requestMatchers(HttpMethod.POST, "/services/**").hasRole(UserRole.ADMIN.name())
                         .anyRequest().authenticated()
                 )
 
