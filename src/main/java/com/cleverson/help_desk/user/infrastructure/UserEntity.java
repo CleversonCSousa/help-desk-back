@@ -18,15 +18,20 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
     @Column(name = "avatar_url")
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
 }
