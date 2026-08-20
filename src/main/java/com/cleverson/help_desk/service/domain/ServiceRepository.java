@@ -10,5 +10,5 @@ public interface ServiceRepository {
     Optional<Service> findById(UUID id);
     List<Service> findAll();
     List<Service> findAllByIsActive(boolean isActive);
-
+    Service update(Service service);
 }

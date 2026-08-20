@@ -91,4 +91,25 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         )).toList();
     }
 
+    @Override
+    public Service update(Service service) {
+        ServiceEntity entity = new ServiceEntity(
+                service.id(),
+                service.title(),
+                service.description(),
+                service.price(),
+                service.isActive()
+        );
+
+        ServiceEntity updated = repository.save(entity);
+
+        return new Service(
+                updated.getId(),
+                updated.getTitle(),
+                updated.getDescription(),
+                updated.getPrice(),
+                updated.getIsActive()
+        );
+    }
+
 }
