@@ -11,4 +11,5 @@ public interface ServiceJpaRepository extends JpaRepository<ServiceEntity, UUID>
     Optional<ServiceEntity> findById(UUID id);
     Optional<ServiceEntity> findByTitle(String title);
     List<ServiceEntity> findAllByIsActive(boolean isActive);
+    List<ServiceEntity> findAllByOrderByCreatedAtDesc();
 }

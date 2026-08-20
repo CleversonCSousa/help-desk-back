@@ -24,7 +24,8 @@ public class CreateServiceUseCase {
                 input.title(),
                 input.description(),
                 input.price(),
-                true
+                true,
+                null
         );
 
         return serviceRepository.save(service);

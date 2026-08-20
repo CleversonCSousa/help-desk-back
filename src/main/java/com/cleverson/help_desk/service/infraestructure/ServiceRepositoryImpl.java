@@ -25,7 +25,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 service.title(),
                 service.description(),
                 service.price(),
-                service.isActive()
+                service.isActive(),
+                null
         );
 
         ServiceEntity saved = repository.save(entity);
@@ -35,7 +36,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 saved.getTitle(),
                 saved.getDescription(),
                 saved.getPrice(),
-                saved.getIsActive()
+                saved.getIsActive(),
+                saved.getCreatedAt()
         );
     }
 
@@ -49,7 +51,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                                 entity.getTitle(),
                                 entity.getDescription(),
                                 entity.getPrice(),
-                                entity.getIsActive()
+                                entity.getIsActive(),
+                                entity.getCreatedAt()
                         )
                 );
     }
@@ -64,7 +67,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                                 entity.getTitle(),
                                 entity.getDescription(),
                                 entity.getPrice(),
-                                entity.getIsActive()
+                                entity.getIsActive(),
+                                entity.getCreatedAt()
                         )
                 );
     }
@@ -76,7 +80,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getPrice(),
-                entity.getIsActive()
+                entity.getIsActive(),
+                entity.getCreatedAt()
         )).toList();
     }
 
@@ -87,7 +92,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getPrice(),
-                entity.getIsActive()
+                entity.getIsActive(),
+                entity.getCreatedAt()
         )).toList();
     }
 
@@ -98,7 +104,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 service.title(),
                 service.description(),
                 service.price(),
-                service.isActive()
+                service.isActive(),
+                service.createdAt()
         );
 
         ServiceEntity updated = repository.save(entity);
@@ -108,8 +115,22 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                 updated.getTitle(),
                 updated.getDescription(),
                 updated.getPrice(),
-                updated.getIsActive()
+                updated.getIsActive(),
+                updated.getCreatedAt()
         );
     }
+
+    @Override
+    public List<Service> findAllByOrderByCreatedAtDesc() {
+        return repository.findAllByOrderByCreatedAtDesc().stream().map(entity -> new Service(
+                entity.getId(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getPrice(),
+                entity.getIsActive(),
+                entity.getCreatedAt()
+        )).toList();
+    }
+
 
 }

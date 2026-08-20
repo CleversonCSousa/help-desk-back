@@ -11,4 +11,5 @@ public interface ServiceRepository {
     List<Service> findAll();
     List<Service> findAllByIsActive(boolean isActive);
     Service update(Service service);
+    List<Service> findAllByOrderByCreatedAtDesc();
 }

@@ -22,7 +22,8 @@ public class ToggleServiceIsActiveUseCase {
                 currentService.title(),
                 currentService.description(),
                 currentService.price(),
-                !currentService.isActive()
+                !currentService.isActive(),
+                currentService.createdAt()
         );
 
         serviceRepository.update(updatedService);

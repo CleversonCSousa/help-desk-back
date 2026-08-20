@@ -18,7 +18,7 @@ public class ListServicesUseCase {
 
         // returns all services (inactive and active)
         if(input.isActive() == null) {
-            return this.serviceRepository.findAll();
+            return this.serviceRepository.findAllByOrderByCreatedAtDesc();
         }
 
         return this.serviceRepository.findAllByIsActive(input.isActive());
