@@ -1,5 +1,6 @@
 package com.cleverson.help_desk.infrastructure.exceptions;
 
+import com.cleverson.help_desk.service.application.exceptions.ServiceAlreadyExistsException;
 import com.cleverson.help_desk.user.application.exceptions.InvalidCredentialsException;
 import com.cleverson.help_desk.user.application.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
@@ -21,5 +22,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<RestErrorMessage> badCredentialsHandler(InvalidCredentialsException exception) {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.UNAUTHORIZED, exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(ServiceAlreadyExistsException.class)
+    public ResponseEntity<RestErrorMessage> serviceAlreadyExistsHandler(ServiceAlreadyExistsException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }
