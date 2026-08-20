@@ -19,8 +19,8 @@ public class MeController {
         MeResponseDTO response = new MeResponseDTO(
                 user.name(),
                 user.email(),
-                user.avatarUrl(),
-                user.role().name()
+                user.role().name(),
+                user.avatarUrl()
         );
         return ResponseEntity.ok(response);
     }

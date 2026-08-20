@@ -3,6 +3,7 @@ package com.cleverson.help_desk.customer.presentation.register;
 import com.cleverson.help_desk.infrastructure.security.JWTService;
 import com.cleverson.help_desk.customer.application.dto.RegisterCustomerInput;
 import com.cleverson.help_desk.customer.application.useCases.RegisterCustomerUseCase;
+import com.cleverson.help_desk.user.domain.UserRole;
 import com.cleverson.help_desk.user.infrastructure.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +56,7 @@ public class RegisterController {
         var auth = authenticationManager.authenticate(usernamePassword);
         var userDetails = (UserDetailsImpl) auth.getPrincipal();
         var token = jwtService.generateToken(userDetails.getUser());
-        var user = new UserResponseDTO(registerCustomerRequest.name(), registerCustomerRequest.email(), null);
+        var user = new UserResponseDTO(registerCustomerRequest.name(), registerCustomerRequest.email(), UserRole.CUSTOMER.name(), null);
         RegisterResponseDTO registerResponseDTO =
                 new RegisterResponseDTO(user, token);
         ResponseCookie cookie = ResponseCookie.from("auth-token", token)

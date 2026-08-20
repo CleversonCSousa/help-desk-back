@@ -48,6 +48,6 @@ public class AuthController {
                 .maxAge(24 * 60 * 60)
                 .sameSite("Lax")
                 .build();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new LoginResponseDTO(new UserResponseDTO(user.name(), user.email(), user.avatarUrl()), token));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new LoginResponseDTO(new UserResponseDTO(user.name(), user.email(), user.role().name(), user.avatarUrl()), token));
     }
 }
