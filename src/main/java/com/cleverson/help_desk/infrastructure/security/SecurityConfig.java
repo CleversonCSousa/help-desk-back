@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/technician/**").hasRole(UserRole.TECHNICIAN.name())
                         .requestMatchers(HttpMethod.POST, "/services/**").hasRole(UserRole.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, "/services/**").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/services/**").hasRole(UserRole.ADMIN.name())
                         .anyRequest().authenticated()
                 )
 
