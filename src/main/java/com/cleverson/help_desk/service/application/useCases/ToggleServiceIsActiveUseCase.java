@@ -5,6 +5,7 @@ import com.cleverson.help_desk.service.application.exceptions.ServiceNotFoundExc
 import com.cleverson.help_desk.service.domain.Service;
 import com.cleverson.help_desk.service.domain.ServiceRepository;
 
+@org.springframework.stereotype.Service
 public class ToggleServiceIsActiveUseCase {
     private final ServiceRepository serviceRepository;
 
