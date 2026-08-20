@@ -4,6 +4,7 @@ import com.cleverson.help_desk.service.domain.Service;
 import com.cleverson.help_desk.service.domain.ServiceRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -67,4 +68,27 @@ public class ServiceRepositoryImpl implements ServiceRepository {
                         )
                 );
     }
+
+    @Override
+    public List<Service> findAll() {
+        return repository.findAll().stream().map(entity -> new Service(
+                entity.getId(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getPrice(),
+                entity.getIsActive()
+        )).toList();
+    }
+
+    @Override
+    public List<Service> findAllByIsActive(boolean isActive) {
+        return repository.findAllByIsActive(isActive).stream().map(entity -> new Service(
+                entity.getId(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getPrice(),
+                entity.getIsActive()
+        )).toList();
+    }
+
 }
