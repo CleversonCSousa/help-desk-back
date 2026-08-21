@@ -2,8 +2,10 @@ package com.cleverson.help_desk.user.infrastructure;
 
 import com.cleverson.help_desk.user.domain.User;
 import com.cleverson.help_desk.user.domain.UserRepository;
+import com.cleverson.help_desk.user.domain.UserRole;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,5 +75,22 @@ public class UserRepositoryImpl implements UserRepository {
                                 entity.getRole()
                         )
                 );
+    }
+
+    @Override
+    public List<User> findByRole(UserRole role) {
+        return repository.findByRole(role)
+                .stream()
+                .map(entity ->
+                        new User(
+                                entity.getId(),
+                                entity.getName(),
+                                entity.getEmail(),
+                                entity.getPassword(),
+                                entity.getAvatarUrl(),
+                                entity.getRole()
+                        )
+                        )
+                .toList();
     }
 }
