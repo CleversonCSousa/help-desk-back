@@ -93,4 +93,9 @@ public class UserRepositoryImpl implements UserRepository {
                         )
                 .toList();
     }
+
+    @Override
+    public void deleteById(UUID id) {
+        this.repository.deleteById(id);
+    }
 }

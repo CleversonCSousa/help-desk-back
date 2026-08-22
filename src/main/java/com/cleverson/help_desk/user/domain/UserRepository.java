@@ -9,4 +9,5 @@ public interface UserRepository {
     Optional<User> findById(UUID id);
     Optional<User> findByEmail(String email);
     List<User> findByRole(UserRole role);
+    void deleteById(UUID id);
 }
