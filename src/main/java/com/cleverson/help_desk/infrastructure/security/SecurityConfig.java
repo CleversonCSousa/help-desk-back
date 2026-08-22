@@ -33,13 +33,31 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable()).cors(cors -> {})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // allows requests to the endpoint /customer/register (POST method) without authentication
                         .requestMatchers(HttpMethod.POST, "/customer/register").permitAll()
+                        // allows requests to the endpoint /auth/login (POST method) without authentication
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
+                        // protects the child routes of /technician (POST method)
                         .requestMatchers(HttpMethod.POST, "/technician/**").hasRole(UserRole.TECHNICIAN.name())
-                        .requestMatchers(HttpMethod.POST, "/services/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the /services route and child routes (POST method)
+                        .requestMatchers(HttpMethod.POST, "/services", "/services/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the /services route and child routes (GET method)
+                        .requestMatchers(HttpMethod.GET, "/services", "/services/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the child routes of /services (PATCH method)
                         .requestMatchers(HttpMethod.PATCH, "/services/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the child routes of /services (PUT method)
                         .requestMatchers(HttpMethod.PUT, "/services/**").hasRole(UserRole.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/customers/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the /customers route and child routes (GET method)
+                        .requestMatchers(HttpMethod.GET, "/customers", "/customers/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the child routes of /customers (DELETE method)
+                        .requestMatchers(HttpMethod.DELETE, "/customers/**").hasRole(UserRole.ADMIN.name())
                         .anyRequest().authenticated()
                 )
 
