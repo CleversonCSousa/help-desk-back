@@ -62,6 +62,9 @@ public class SecurityConfig {
                         // protects the child routes of /customers (PUT method)
                         .requestMatchers(HttpMethod.PUT, "/customers/**").hasRole(UserRole.ADMIN.name())
 
+                        // protects the /technicians route and child routes (GET method)
+                        .requestMatchers(HttpMethod.GET, "/technicians", "/technicians/**").hasRole(UserRole.ADMIN.name())
+
                         .anyRequest().authenticated()
                 )
 
