@@ -58,6 +58,10 @@ public class SecurityConfig {
 
                         // protects the child routes of /customers (DELETE method)
                         .requestMatchers(HttpMethod.DELETE, "/customers/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the child routes of /customers (PUT method)
+                        .requestMatchers(HttpMethod.PUT, "/customers/**").hasRole(UserRole.ADMIN.name())
+
                         .anyRequest().authenticated()
                 )
 

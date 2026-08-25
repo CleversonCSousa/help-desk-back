@@ -1,5 +1,7 @@
 package com.cleverson.help_desk.infrastructure.exceptions;
 
+import com.cleverson.help_desk.customer.application.exceptions.CustomerAlreadyExistsException;
+import com.cleverson.help_desk.customer.application.exceptions.CustomerNotFoundException;
 import com.cleverson.help_desk.service.application.exceptions.ServiceAlreadyExistsException;
 import com.cleverson.help_desk.service.application.exceptions.ServiceNotFoundException;
 import com.cleverson.help_desk.user.application.exceptions.InvalidCredentialsException;
@@ -33,6 +35,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ServiceNotFoundException.class)
     public ResponseEntity<RestErrorMessage> serviceNotFoundHandler(ServiceNotFoundException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(CustomerAlreadyExistsException.class)
+    public ResponseEntity<RestErrorMessage> customerAlreadyExistsHandler(CustomerAlreadyExistsException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<RestErrorMessage> customerNotFoundHandler(CustomerNotFoundException exception) {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
