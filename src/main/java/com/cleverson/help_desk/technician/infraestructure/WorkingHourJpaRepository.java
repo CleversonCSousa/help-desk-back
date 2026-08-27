@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface WorkingHourJpaRepository extends JpaRepository<WorkingHourEntity, UUID> {
-    List<WorkingHourEntity> findByUserId(UUID userId);
-    void deleteByUserId(UUID userId);
+    List<WorkingHourEntity> findByTechnicianId(UUID technicianId);
+    void deleteByTechnicianId(UUID technicianId);
 }

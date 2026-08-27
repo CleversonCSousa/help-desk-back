@@ -1,6 +1,5 @@
 package com.cleverson.help_desk.technician.infraestructure;
 
-import com.cleverson.help_desk.user.infrastructure.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +24,6 @@ public class WorkingHourEntity {
     // It also prevents it from pulling the user's data.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private TechnicianEntity technician;
 
 }

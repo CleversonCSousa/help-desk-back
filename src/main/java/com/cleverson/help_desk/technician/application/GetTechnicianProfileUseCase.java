@@ -28,7 +28,7 @@ public class GetTechnicianProfileUseCase {
         User user = this.userRepository.findById(technicianId)
                 .orElseThrow(() -> new TechnicianNotFound());
 
-        List<WorkingHour> workingHours = this.workingHourRepository.findByUserId(technicianId);
+        List<WorkingHour> workingHours = this.workingHourRepository.findByTechnicianId(technicianId);
         return new TechnicianProfileResponse(
                 user.id(),
                 user.name(),
