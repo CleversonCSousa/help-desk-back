@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record Technician(
-        UUID userId,
+        UUID id,
         List<WorkingHour> workingHours
 ) {
 }
