@@ -1,4 +1,4 @@
-package com.cleverson.help_desk.technician.application;
+package com.cleverson.help_desk.technician.application.useCases;
 
 import com.cleverson.help_desk.technician.application.dto.TechnicianSummaryResponse;
 import com.cleverson.help_desk.technician.domain.TechnicianRepository;

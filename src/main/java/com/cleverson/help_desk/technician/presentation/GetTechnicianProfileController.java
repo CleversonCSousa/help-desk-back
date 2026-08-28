@@ -1,6 +1,6 @@
 package com.cleverson.help_desk.technician.presentation;
 
-import com.cleverson.help_desk.technician.application.GetTechnicianProfileUseCase;
+import com.cleverson.help_desk.technician.application.useCases.GetTechnicianProfileUseCase;
 import com.cleverson.help_desk.technician.application.dto.TechnicianProfileResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
