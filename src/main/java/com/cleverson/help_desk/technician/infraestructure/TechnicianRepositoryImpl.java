@@ -1,9 +1,12 @@
 package com.cleverson.help_desk.technician.infraestructure;
 
+import com.cleverson.help_desk.technician.application.exceptions.TechnicianNotFound;
 import com.cleverson.help_desk.technician.domain.Technician;
 import com.cleverson.help_desk.technician.domain.TechnicianRepository;
 import com.cleverson.help_desk.technician.domain.TechnicianSummary;
 import com.cleverson.help_desk.technician.domain.WorkingHour;
+import com.cleverson.help_desk.user.infrastructure.UserJpaRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,9 +17,17 @@ import java.util.UUID;
 public class TechnicianRepositoryImpl implements TechnicianRepository {
 
     private final TechnicianJpaRepository technicianJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final EntityManager entityManager;
 
-    public TechnicianRepositoryImpl(TechnicianJpaRepository technicianJpaRepository) {
+    public TechnicianRepositoryImpl(
+            TechnicianJpaRepository technicianJpaRepository,
+            UserJpaRepository userJpaRepository,
+            EntityManager entityManager
+    ) {
         this.technicianJpaRepository = technicianJpaRepository;
+        this.userJpaRepository = userJpaRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -52,22 +63,35 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
     }
 
     /*
-     * Brief summary: Before actually saving the technician and their working hours, this method needs to update
-     * the collection to avoid inserting duplicate schedules or keeping removed ones.
+     * Brief summary: Implements an "Upsert" strategy (Update or Insert) for technicians and their working hours.
      *
-     * - The "getReferenceById" method creates a proxy object that holds the technician's ID without requiring a
-     *   database lookup (the check for the technician's existence is already handled within the Use Case).
-     * - When we call "getWorkingHours()", the database executes a "SELECT" statement to retrieve the tracked collection.
-     * - When we invoke "clear()", Hibernate prepares a "DELETE" operation behind the scenes for the old schedules
-     *   due to "orphanRemoval = true".
-     * - When we invoke "addAll()", Hibernate prepares the "INSERT" statements for the new schedules.
-     * - All these queued operations (DELETEs and INSERTs) are finally flushed/executed in the database at the end of the transaction.
+     * - Fetches the managed User entity to safely satisfy the @MapsId relationship.
+     * - If the technician exists, retrieves the managed entity and clears old working hours for orphan removal.
+     * - If the technician is new, instantiates it and uses "entityManager.persist()" to satisfy @MapsId identifier rules.
+     * - Maps and adds the updated working hours, relying on Hibernate's session flush to synchronize changes.
      */
     @Override
     public void save(Technician technician) {
-        var entity = this.technicianJpaRepository.getReferenceById(technician.id());
-        entity.getWorkingHours().clear();
+        var managedUser = this.userJpaRepository.findById(technician.id())
+                .orElseThrow(() -> new TechnicianNotFound());
 
+        var existingEntity = this.technicianJpaRepository.findById(technician.id());
+
+        TechnicianEntity entity;
+
+        if (existingEntity.isPresent()) {
+            // update flow: retrieve the managed entity directly from the database
+            entity = existingEntity.get();
+            entity.getWorkingHours().clear();
+        } else {
+            // insert flow: create a new entity and use persist() to satisfy @MapsId identifier rules
+            entity = new TechnicianEntity();
+            entity.setId(technician.id());
+            entity.setUser(managedUser);
+            this.entityManager.persist(entity);
+        }
+
+        // map and add the new working hours linked to the entity
         var updatedWorkingHours = technician.workingHours().stream()
                 .map(wh -> new WorkingHourEntity(
                         wh.id(),
@@ -75,9 +99,8 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
                         entity
                 ))
                 .toList();
-        entity.getWorkingHours().addAll(updatedWorkingHours);
 
-        this.technicianJpaRepository.save(entity);
+        entity.getWorkingHours().addAll(updatedWorkingHours);
     }
 
 }

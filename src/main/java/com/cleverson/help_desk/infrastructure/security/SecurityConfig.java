@@ -38,9 +38,6 @@ public class SecurityConfig {
                         // allows requests to the endpoint /auth/login (POST method) without authentication
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 
-                        // protects the child routes of /technician (POST method)
-                        .requestMatchers(HttpMethod.POST, "/technician/**").hasRole(UserRole.TECHNICIAN.name())
-
                         // protects the /services route and child routes (POST method)
                         .requestMatchers(HttpMethod.POST, "/services", "/services/**").hasRole(UserRole.ADMIN.name())
 
@@ -68,6 +65,10 @@ public class SecurityConfig {
                         // protects the /technicians route and child routes (PUT method)
 
                         .requestMatchers(HttpMethod.PUT, "/technicians", "/technicians/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the child routes of /technicians (POST method)
+
+                        .requestMatchers(HttpMethod.POST, "/technicians").hasRole(UserRole.ADMIN.name())
 
                         .anyRequest().authenticated()
                 )
