@@ -50,4 +50,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(com.cleverson.help_desk.technician.application.exceptions.NoTechnicianAvailableException.class)
+    public ResponseEntity<RestErrorMessage> noTechnicianAvailableHandler(com.cleverson.help_desk.technician.application.exceptions.NoTechnicianAvailableException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.UNPROCESSABLE_CONTENT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(response);
+    }
 }

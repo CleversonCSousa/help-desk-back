@@ -69,6 +69,16 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PUT, "/technicians", "/technicians/**").hasRole(UserRole.ADMIN.name())
 
+<<<<<<< Updated upstream
+=======
+                        // protects the child routes of /technicians (POST method)
+
+                        .requestMatchers(HttpMethod.POST, "/technicians").hasRole(UserRole.ADMIN.name())
+
+                        // protects the /customers route (POST method)
+                        .requestMatchers(HttpMethod.POST, "/tickets").hasAnyRole(UserRole.ADMIN.name(), UserRole.CUSTOMER.name())
+
+>>>>>>> Stashed changes
                         .anyRequest().authenticated()
                 )
 
