@@ -9,6 +9,8 @@ import com.cleverson.help_desk.user.infrastructure.UserJpaRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -80,27 +82,20 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
         TechnicianEntity entity;
 
         if (existingEntity.isPresent()) {
-            // update flow: retrieve the managed entity directly from the database
             entity = existingEntity.get();
-            entity.getWorkingHours().clear();
         } else {
-            // insert flow: create a new entity and use persist() to satisfy @MapsId identifier rules
             entity = new TechnicianEntity();
             entity.setId(technician.id());
             entity.setUser(managedUser);
             this.entityManager.persist(entity);
         }
+    }
 
-        // map and add the new working hours linked to the entity
-        var updatedWorkingHours = technician.workingHours().stream()
-                .map(wh -> new WorkingHourEntity(
-                        wh.id(),
-                        wh.timeSlot(),
-                        entity
-                ))
-                .toList();
-
-        entity.getWorkingHours().addAll(updatedWorkingHours);
+    @Override
+    public List<TechnicianEntity> findAvailableTechnicianWithLeastLoad(LocalTime currentTime) {
+        var startOfDay = LocalDate.now().atStartOfDay();
+        var endOfDay = startOfDay.plusDays(1);
+        return this.technicianJpaRepository.findAvailableTechnicianWithLeastLoad(currentTime, startOfDay, endOfDay);
     }
 
 }
