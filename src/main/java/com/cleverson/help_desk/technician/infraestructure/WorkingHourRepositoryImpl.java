@@ -33,7 +33,7 @@ public class WorkingHourRepositoryImpl implements WorkingHourRepository {
 
         List<WorkingHourEntity> entities = workingHours.stream()
                 .map(entity -> new WorkingHourEntity(
-                        entity.id(),
+                        null,
                         entity.timeSlot(),
                         technician
                 )).toList();
