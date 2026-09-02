@@ -6,6 +6,8 @@ import com.cleverson.help_desk.technician.domain.TechnicianSummary;
 import com.cleverson.help_desk.technician.domain.WorkingHour;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -78,6 +80,13 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
         entity.getWorkingHours().addAll(updatedWorkingHours);
 
         this.technicianJpaRepository.save(entity);
+    }
+
+    @Override
+    public List<TechnicianEntity> findAvailableTechnicianWithLeastLoad(LocalTime currentTime) {
+        var startOfDay = LocalDate.now().atStartOfDay();
+        var endOfDay = startOfDay.plusDays(1);
+        return this.technicianJpaRepository.findAvailableTechnicianWithLeastLoad(currentTime, startOfDay, endOfDay);
     }
 
 }
