@@ -6,9 +6,19 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
-      show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
+
 auth:
   jwt:
     secret-key: ${JWT_SECRET}
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.stat: DEBUG

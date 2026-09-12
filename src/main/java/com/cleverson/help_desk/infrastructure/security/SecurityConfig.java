@@ -71,6 +71,7 @@ public class SecurityConfig {
 
                         // protects the child routes of /technicians (POST method)
 
+<<<<<<< Updated upstream
                         .requestMatchers(HttpMethod.POST, "/technicians").hasRole(UserRole.ADMIN.name())
 
                         // protects the /tickets route (POST method)
@@ -78,6 +79,16 @@ public class SecurityConfig {
 
                         // protects the /tickets route (GET method)
                         .requestMatchers(HttpMethod.GET, "/tickets").hasRole(UserRole.ADMIN.name())
+=======
+                        // protects the /tickets route (POST method)
+                        .requestMatchers(HttpMethod.POST, "/tickets").hasAnyRole(UserRole.ADMIN.name(), UserRole.CUSTOMER.name())
+
+                        // protects the /tickets route and child routes (PATCH method)
+                        .requestMatchers(HttpMethod.PATCH, "/tickets", "/tickets/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.TECHNICIAN.name())
+
+                        // protects the /tickets route (GET method for all roles with internal filtering)
+                        .requestMatchers(HttpMethod.GET, "/tickets", "/tickets/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.TECHNICIAN.name(), UserRole.CUSTOMER.name())
+>>>>>>> Stashed changes
 
                         .anyRequest().authenticated()
                 )
