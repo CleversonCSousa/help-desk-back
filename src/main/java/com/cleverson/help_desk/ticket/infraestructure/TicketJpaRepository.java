@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TicketJpaRepository extends JpaRepository<TicketEntity, UUID> {
@@ -33,4 +33,54 @@ public interface TicketJpaRepository extends JpaRepository<TicketEntity, UUID> {
         ORDER BY t.updatedAt DESC
     """)
     Page<TicketSummaryResponse> findAllSummaries(Pageable pageable);
+
+    @Query("""
+        SELECT new com.cleverson.help_desk.ticket.application.dto.TicketSummaryResponse(
+            t.id, 
+            t.code, 
+            t.title, 
+            s.title, 
+            (t.basePrice + COALESCE(SUM(additional.price), 0)), 
+            u.name, 
+            tu.name, 
+            t.status, 
+            t.updatedAt
+        ) 
+        FROM TicketEntity t
+            JOIN t.service s
+            JOIN t.user u
+            JOIN t.technician tech
+            JOIN tech.user tu
+            LEFT JOIN TicketAdditionalServiceEntity additional ON additional.ticket = t
+                WHERE t.technician.id = :technicianId
+        GROUP BY t.id, t.code, t.title, s.title, t.basePrice, u.name, tu.name, t.status, t.updatedAt
+        ORDER BY t.updatedAt DESC
+    """)
+    Page<TicketSummaryResponse> findAllSummariesByTechnicianId(UUID technicianId, Pageable pageable);
+
+    @Query(value = """
+        SELECT new com.cleverson.help_desk.ticket.application.dto.TicketSummaryResponse(
+            t.id, 
+            t.code, 
+            t.title, 
+            s.title, 
+            (t.basePrice + COALESCE(SUM(additional.price), 0)), 
+            u.name, 
+            tu.name, 
+            t.status, 
+            t.updatedAt
+        ) 
+        FROM TicketEntity t
+            JOIN t.service s
+            JOIN t.user u
+            JOIN t.technician tech
+            JOIN tech.user tu
+            LEFT JOIN TicketAdditionalServiceEntity additional ON additional.ticket = t
+                WHERE t.user.id = :customerId
+        GROUP BY t.id, t.code, t.title, s.title, t.basePrice, u.name, tu.name, t.status, t.updatedAt
+        ORDER BY t.updatedAt DESC
+    """, countQuery = "")
+    Page<TicketSummaryResponse> findAllSummariesByCustomerId(UUID customerId, Pageable pageable);
+
+    Optional<TicketEntity> findByTechnicianId(UUID id);
 }
