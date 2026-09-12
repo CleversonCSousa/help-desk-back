@@ -2,7 +2,10 @@ package com.cleverson.help_desk.ticket.apresentation.create;
 
 import com.cleverson.help_desk.ticket.application.dto.CreateTicketInput;
 import com.cleverson.help_desk.ticket.application.useCases.CreateTicketUseCase;
+<<<<<<< Updated upstream
 import com.cleverson.help_desk.user.infrastructure.UserEntity;
+=======
+>>>>>>> Stashed changes
 import com.cleverson.help_desk.user.infrastructure.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

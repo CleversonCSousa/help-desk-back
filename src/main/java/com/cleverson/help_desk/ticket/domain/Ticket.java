@@ -19,4 +19,19 @@ public record Ticket(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
+    public Ticket setStatus(TicketStatus status) {
+        return new Ticket(
+                this.id,
+                this.code,
+                this.title,
+                this.description,
+                this.basePrice,
+                status,
+                this.customerId,
+                this.serviceId,
+                this.technicianId,
+                this.createdAt,
+                LocalDateTime.now()
+        );
+    }
 }
