@@ -53,19 +53,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
 
     @ExceptionHandler(com.cleverson.help_desk.technician.application.exceptions.NoTechnicianAvailableException.class)
     public ResponseEntity<RestErrorMessage> noTechnicianAvailableHandler(com.cleverson.help_desk.technician.application.exceptions.NoTechnicianAvailableException exception) {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.UNPROCESSABLE_CONTENT, exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(response);
     }
-<<<<<<< Updated upstream
-=======
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<RestErrorMessage> userNotFoundHandler(UserNotFoundException exception) {
@@ -84,6 +77,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.FORBIDDEN, exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 }
