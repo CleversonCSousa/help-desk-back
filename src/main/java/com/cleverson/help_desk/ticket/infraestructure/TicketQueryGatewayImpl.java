@@ -1,11 +1,13 @@
 package com.cleverson.help_desk.ticket.infraestructure;
 
+import com.cleverson.help_desk.ticket.application.dto.GetTicketDetailsResponse;
 import com.cleverson.help_desk.ticket.application.dto.TicketQueryGateway;
 import com.cleverson.help_desk.ticket.application.dto.TicketSummaryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -29,5 +31,10 @@ public class TicketQueryGatewayImpl implements TicketQueryGateway {
     @Override
     public Page<TicketSummaryResponse> findAllSummariesByCustomerId(UUID customerId, Pageable pageable) {
         return this.ticketJpaRepository.findAllSummariesByCustomerId(customerId, pageable);
+    }
+
+    @Override
+    public Optional<GetTicketDetailsResponse> findDetailById(UUID id) {
+        return this.ticketJpaRepository.findDetailById(id);
     }
 }

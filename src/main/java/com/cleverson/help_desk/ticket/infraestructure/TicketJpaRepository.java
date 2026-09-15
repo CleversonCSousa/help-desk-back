@@ -1,5 +1,6 @@
 package com.cleverson.help_desk.ticket.infraestructure;
 
+import com.cleverson.help_desk.ticket.application.dto.GetTicketDetailsResponse;
 import com.cleverson.help_desk.ticket.application.dto.TicketSummaryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -83,4 +84,37 @@ public interface TicketJpaRepository extends JpaRepository<TicketEntity, UUID> {
     Page<TicketSummaryResponse> findAllSummariesByCustomerId(UUID customerId, Pageable pageable);
 
     Optional<TicketEntity> findByTechnicianId(UUID id);
+
+    @Query("""
+        SELECT new com.cleverson.help_desk.ticket.application.dto.GetTicketDetailsResponse(
+            t.id,
+            t.code,
+            t.title,
+            t.description,
+            t.basePrice,
+            (t.basePrice + COALESCE(SUM(additional.price), 0)),
+            t.status,
+            t.createdAt,
+            t.updatedAt,
+            u.id,
+            u.name,
+            u.avatarUrl,
+            s.id,
+            s.title,
+            tech.id,
+            tu.name,
+            tu.email,
+            tu.avatarUrl
+        )
+        FROM TicketEntity t
+            JOIN t.service s
+            JOIN t.user u
+            JOIN t.technician tech
+            JOIN tech.user tu
+            LEFT JOIN TicketAdditionalServiceEntity additional ON additional.ticket = t
+        WHERE t.id = :id
+        GROUP BY t.id, t.code, t.title, t.description, t.basePrice, t.status, t.createdAt, t.updatedAt,
+                 u.id, u.name, u.avatarUrl, s.id, s.title, tech.id, tu.name, tu.email, tu.avatarUrl
+    """)
+    Optional<GetTicketDetailsResponse> findDetailById(UUID id);
 }
