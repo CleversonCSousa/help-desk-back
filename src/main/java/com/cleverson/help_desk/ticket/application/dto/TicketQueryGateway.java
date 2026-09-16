@@ -1,5 +1,6 @@
 package com.cleverson.help_desk.ticket.application.dto;
 
+import com.cleverson.help_desk.ticket.domain.TicketStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 // Created so the Domain layer (TicketRepository) does not need to depend on Application layer DTOs (TicketSummaryResponse)
 public interface TicketQueryGateway {
     Page<TicketSummaryResponse> findAllSummaries(Pageable pageable);
-    Page<TicketSummaryResponse> findAllSummariesByTechnicianId(UUID technicianId, Pageable pageable);
+    Page<TicketSummaryResponse> findAllSummariesByTechnicianId(UUID technicianId, TicketStatus status, Pageable pageable);
     Page<TicketSummaryResponse> findAllSummariesByCustomerId(UUID customerId, Pageable pageable);
     Optional<GetTicketDetailsResponse> findDetailById(UUID id);
 }

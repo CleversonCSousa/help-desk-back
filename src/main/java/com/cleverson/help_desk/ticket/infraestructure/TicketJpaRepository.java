@@ -2,6 +2,7 @@ package com.cleverson.help_desk.ticket.infraestructure;
 
 import com.cleverson.help_desk.ticket.application.dto.GetTicketDetailsResponse;
 import com.cleverson.help_desk.ticket.application.dto.TicketSummaryResponse;
+import com.cleverson.help_desk.ticket.domain.TicketStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,11 +54,11 @@ public interface TicketJpaRepository extends JpaRepository<TicketEntity, UUID> {
             JOIN t.technician tech
             JOIN tech.user tu
             LEFT JOIN TicketAdditionalServiceEntity additional ON additional.ticket = t
-                WHERE t.technician.id = :technicianId
+                WHERE tech.id = :technicianId AND (:status IS NULL OR t.status = :status)
         GROUP BY t.id, t.code, t.title, s.title, t.basePrice, u.name, tu.name, t.status, t.updatedAt
         ORDER BY t.updatedAt DESC
     """)
-    Page<TicketSummaryResponse> findAllSummariesByTechnicianId(UUID technicianId, Pageable pageable);
+    Page<TicketSummaryResponse> findAllSummariesByTechnicianId(UUID technicianId, TicketStatus status, Pageable pageable);
 
     @Query(value = """
         SELECT new com.cleverson.help_desk.ticket.application.dto.TicketSummaryResponse(
@@ -77,10 +78,10 @@ public interface TicketJpaRepository extends JpaRepository<TicketEntity, UUID> {
             JOIN t.technician tech
             JOIN tech.user tu
             LEFT JOIN TicketAdditionalServiceEntity additional ON additional.ticket = t
-                WHERE t.user.id = :customerId
+                WHERE u.id = :customerId
         GROUP BY t.id, t.code, t.title, s.title, t.basePrice, u.name, tu.name, t.status, t.updatedAt
         ORDER BY t.updatedAt DESC
-    """, countQuery = "")
+    """)
     Page<TicketSummaryResponse> findAllSummariesByCustomerId(UUID customerId, Pageable pageable);
 
     Optional<TicketEntity> findByTechnicianId(UUID id);
