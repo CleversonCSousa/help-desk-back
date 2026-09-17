@@ -3,11 +3,15 @@ package com.cleverson.help_desk.ticket.infraestructure;
 import com.cleverson.help_desk.service.infraestructure.ServiceJpaRepository;
 import com.cleverson.help_desk.technician.infraestructure.TechnicianJpaRepository;
 import com.cleverson.help_desk.ticket.domain.Ticket;
+import com.cleverson.help_desk.ticket.domain.TicketAdditionalService;
 import com.cleverson.help_desk.ticket.domain.TicketRepository;
 import com.cleverson.help_desk.user.infrastructure.UserJpaRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,15 +39,18 @@ public class TicketRepositoryImpl implements TicketRepository {
 
     // This method assumes that the caller has already verified whether the records exist in the database.
     @Override
+    // Ensures that all operations performed by Hibernate are handled within a transaction.
+    @Transactional
     public Ticket save(Ticket ticket) {
         var customer = this.userJpaRepository.getReferenceById(ticket.customerId());
         var service = this.serviceJpaRepository.getReferenceById(ticket.serviceId());
         var technician = this.technicianJpaRepository.getReferenceById(ticket.technicianId());
-
-        var entity = new TicketEntity();
+        final TicketEntity entity;
         // upsert strategy
         if(ticket.id() != null) {
             entity = this.ticketJpaRepository.findById(ticket.id()).orElse(new TicketEntity());
+        } else {
+            entity = new TicketEntity();
         }
 
         entity.setTitle(ticket.title());
@@ -53,6 +60,31 @@ public class TicketRepositoryImpl implements TicketRepository {
         entity.setUser(customer);
         entity.setService(service);
         entity.setTechnician(technician);
+
+        if (ticket.additionalServices() != null) {
+            // if there are no additional services list initialized yet, create a new ArrayList, otherwise prepare to clear stale elements
+            if (entity.getAdditionalServices() == null) {
+                entity.setAdditionalServices(new ArrayList<>());
+            } else {
+                // this is essential because, since orphanRemoval is set to true, clearing the collection lets Hibernate detect removed items and delete them from the database
+                entity.getAdditionalServices().clear();
+            }
+
+            // convert domain layer to infra layer
+            var additionalEntities = ticket.additionalServices().stream().map(add -> {
+                var additionalEntity = new TicketAdditionalServiceEntity();
+                additionalEntity.setId(add.id());
+                additionalEntity.setDescription(add.description());
+                additionalEntity.setPrice(add.price());
+
+                additionalEntity.setTicket(entity);
+                additionalEntity.setService(this.serviceJpaRepository.getReferenceById(add.serviceId()));
+
+                return additionalEntity;
+            }).toList();
+
+            entity.getAdditionalServices().addAll(additionalEntities);
+        }
 
         var savedEntity = this.ticketJpaRepository.save(entity);
         return mapperToDomain(savedEntity);
@@ -64,6 +96,17 @@ public class TicketRepositoryImpl implements TicketRepository {
     }
 
     private Ticket mapperToDomain(TicketEntity entity) {
+        List<TicketAdditionalService> additionals = entity.getAdditionalServices() != null
+                ? entity.getAdditionalServices().stream()
+                .map(add -> new TicketAdditionalService(
+                        add.getId(),
+                        entity.getId(),
+                        add.getService().getId(),
+                        add.getDescription(),
+                        add.getPrice()
+                )).toList()
+                : List.of();
+
         return new Ticket(
                 entity.getId(),
                 entity.getCode(),
@@ -74,6 +117,7 @@ public class TicketRepositoryImpl implements TicketRepository {
                 entity.getUser().getId(),
                 entity.getService().getId(),
                 entity.getTechnician().getId(),
+                additionals,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

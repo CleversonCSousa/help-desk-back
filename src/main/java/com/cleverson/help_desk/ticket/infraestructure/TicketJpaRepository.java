@@ -87,35 +87,13 @@ public interface TicketJpaRepository extends JpaRepository<TicketEntity, UUID> {
     Optional<TicketEntity> findByTechnicianId(UUID id);
 
     @Query("""
-        SELECT new com.cleverson.help_desk.ticket.application.dto.GetTicketDetailsResponse(
-            t.id,
-            t.code,
-            t.title,
-            t.description,
-            t.basePrice,
-            (t.basePrice + COALESCE(SUM(additional.price), 0)),
-            t.status,
-            t.createdAt,
-            t.updatedAt,
-            u.id,
-            u.name,
-            u.avatarUrl,
-            s.id,
-            s.title,
-            tech.id,
-            tu.name,
-            tu.email,
-            tu.avatarUrl
-        )
-        FROM TicketEntity t
-            JOIN t.service s
-            JOIN t.user u
-            JOIN t.technician tech
-            JOIN tech.user tu
-            LEFT JOIN TicketAdditionalServiceEntity additional ON additional.ticket = t
+        SELECT t FROM TicketEntity t
+            JOIN FETCH t.service s
+            JOIN FETCH t.user u
+            JOIN FETCH t.technician tech
+            JOIN FETCH tech.user tu
+            LEFT JOIN FETCH t.additionalServices
         WHERE t.id = :id
-        GROUP BY t.id, t.code, t.title, t.description, t.basePrice, t.status, t.createdAt, t.updatedAt,
-                 u.id, u.name, u.avatarUrl, s.id, s.title, tech.id, tu.name, tu.email, tu.avatarUrl
     """)
-    Optional<GetTicketDetailsResponse> findDetailById(UUID id);
+    Optional<TicketEntity> findDetailById(UUID id);
 }

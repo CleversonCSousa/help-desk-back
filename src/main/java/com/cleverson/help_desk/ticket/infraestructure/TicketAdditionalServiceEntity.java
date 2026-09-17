@@ -2,9 +2,14 @@ package com.cleverson.help_desk.ticket.infraestructure;
 
 import com.cleverson.help_desk.service.infraestructure.ServiceEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "ticket_additional_services")
 public class TicketAdditionalServiceEntity {

@@ -80,6 +80,9 @@ public class SecurityConfig {
                         // protects the /tickets route and child routes (PATCH method)
                         .requestMatchers(HttpMethod.PATCH, "/tickets", "/tickets/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.TECHNICIAN.name())
 
+                        // protects ALL methods for additional services routes, allows only technicians to access the route
+                        .requestMatchers("/tickets/*/additional-services", "/tickets/*/additional-services/**").hasRole(UserRole.TECHNICIAN.name())
+
                         .anyRequest().authenticated()
                 )
 
