@@ -4,6 +4,7 @@ import com.cleverson.help_desk.ticket.application.dto.CreateAdditionalServiceInp
 import com.cleverson.help_desk.ticket.application.dto.CreateAdditionalServiceResponse;
 import com.cleverson.help_desk.ticket.application.useCases.CreateAdditionalServiceUseCase;
 import com.cleverson.help_desk.user.infrastructure.security.UserDetailsImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +24,7 @@ public class CreateAdditionalServiceController {
     @PostMapping("/{ticketId}/additional-services")
     public ResponseEntity<CreateAdditionalServiceResponse> handle(
             @PathVariable UUID ticketId,
-            @RequestBody CreateAdditionalServiceInput input,
+            @Valid @RequestBody CreateAdditionalServiceRequestDTO request,
             @AuthenticationPrincipal UserDetailsImpl userDetails
             ) {
         UUID technicianId = userDetails.getUser().id();
@@ -31,7 +32,10 @@ public class CreateAdditionalServiceController {
         CreateAdditionalServiceResponse response = this.createAdditionalServiceUseCase.execute(
                 ticketId,
                 technicianId,
-                input
+                new CreateAdditionalServiceInput(
+                        request.description(),
+                        request.price()
+                )
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
