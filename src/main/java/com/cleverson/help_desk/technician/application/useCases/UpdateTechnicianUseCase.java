@@ -4,6 +4,7 @@ import com.cleverson.help_desk.technician.application.dto.UpdateTechnicianInput;
 import com.cleverson.help_desk.technician.application.exceptions.TechnicianNotFound;
 import com.cleverson.help_desk.technician.domain.Technician;
 import com.cleverson.help_desk.technician.domain.TechnicianRepository;
+import com.cleverson.help_desk.technician.domain.WorkingHourRepository;
 import com.cleverson.help_desk.user.application.exceptions.UserAlreadyExistsException;
 import com.cleverson.help_desk.user.domain.User;
 import com.cleverson.help_desk.user.domain.UserRepository;
@@ -14,10 +15,12 @@ import org.springframework.stereotype.Service;
 public class UpdateTechnicianUseCase {
     private final TechnicianRepository technicianRepository;
     private final UserRepository userRepository;
+    private final WorkingHourRepository workingHourRepository;
 
-    public UpdateTechnicianUseCase(TechnicianRepository technicianRepository, UserRepository userRepository) {
+    public UpdateTechnicianUseCase(TechnicianRepository technicianRepository, UserRepository userRepository, WorkingHourRepository workingHourRepository) {
         this.technicianRepository = technicianRepository;
         this.userRepository = userRepository;
+        this.workingHourRepository = workingHourRepository;
     }
 
     /*
@@ -56,5 +59,8 @@ public class UpdateTechnicianUseCase {
                 input.workingHours()
         );
         this.technicianRepository.save(updatedTechnician);
+
+        this.workingHourRepository.deleteByTechnicianId(input.id());
+        this.workingHourRepository.saveAll(input.id(), input.workingHours());
     }
 }
