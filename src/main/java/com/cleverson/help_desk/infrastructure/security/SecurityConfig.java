@@ -44,8 +44,11 @@ public class SecurityConfig {
                         // protects the /services route and child routes (POST method)
                         .requestMatchers(HttpMethod.POST, "/services", "/services/**").hasRole(UserRole.ADMIN.name())
 
-                        // protects the /services route and child routes (GET method)
-                        .requestMatchers(HttpMethod.GET, "/services", "/services/**").hasRole(UserRole.ADMIN.name())
+                        // protects the /services child routes (GET method)
+                        .requestMatchers(HttpMethod.GET, "/services/**").hasRole(UserRole.ADMIN.name())
+
+                        // protects the /services route (GET method)
+                        .requestMatchers(HttpMethod.GET, "/services").hasAnyRole(UserRole.ADMIN.name(), UserRole.TECHNICIAN.name(), UserRole.CUSTOMER.name())
 
                         // protects the child routes of /services (PATCH method)
                         .requestMatchers(HttpMethod.PATCH, "/services/**").hasRole(UserRole.ADMIN.name())
