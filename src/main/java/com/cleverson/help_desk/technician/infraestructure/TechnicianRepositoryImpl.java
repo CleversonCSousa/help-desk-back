@@ -98,11 +98,4 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
         return this.technicianJpaRepository.findAvailableTechnicianWithLeastLoad(currentTime, startOfDay, endOfDay);
     }
 
-    @Override
-    public List<TechnicianEntity> findAvailableTechnicianWithLeastLoad(LocalTime currentTime) {
-        var startOfDay = LocalDate.now().atStartOfDay();
-        var endOfDay = startOfDay.plusDays(1);
-        return this.technicianJpaRepository.findAvailableTechnicianWithLeastLoad(currentTime, startOfDay, endOfDay);
-    }
-
 }

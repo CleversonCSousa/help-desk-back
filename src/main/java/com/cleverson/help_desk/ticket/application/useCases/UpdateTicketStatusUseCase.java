@@ -1,11 +1,13 @@
 package com.cleverson.help_desk.ticket.application.useCases;
 
+import com.cleverson.help_desk.ticket.application.dto.UpdateTicketStatusInput;
 import com.cleverson.help_desk.ticket.application.exceptions.TicketNotFoundException;
 import com.cleverson.help_desk.ticket.application.exceptions.UnauthorizedTicketAccessException;
 import com.cleverson.help_desk.ticket.domain.Ticket;
 import com.cleverson.help_desk.ticket.domain.TicketRepository;
-import com.cleverson.help_desk.ticket.domain.TicketStatus;
+import com.cleverson.help_desk.user.application.exceptions.UserNotFoundException;
 import com.cleverson.help_desk.user.domain.User;
+import com.cleverson.help_desk.user.domain.UserRepository;
 import com.cleverson.help_desk.user.domain.UserRole;
 import org.springframework.stereotype.Service;
 
@@ -14,29 +16,34 @@ import java.util.UUID;
 @Service
 public class UpdateTicketStatusUseCase {
     private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
 
-    public UpdateTicketStatusUseCase(TicketRepository ticketRepository) {
+    public UpdateTicketStatusUseCase(TicketRepository ticketRepository, UserRepository userRepository) {
         this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
     }
 
-    public void execute(UUID ticketId, User user, TicketStatus status) {
-        Ticket ticket = ticketRepository.findById(ticketId)
+    public void execute(UpdateTicketStatusInput input) {
+        User user = this.userRepository.findById(input.userId())
+                .orElseThrow(UserNotFoundException::new);
+
+        Ticket ticket = this.ticketRepository.findById(input.ticketId())
                 .orElseThrow(TicketNotFoundException::new);
+
         if (user.role() == UserRole.TECHNICIAN) {
-            this.checkIfTechnicianIsAssignedToTicket(ticket, user);
+            this.checkIfTechnicianIsAssignedToTicket(ticket, user.id());
         } else if (user.role() != UserRole.ADMIN) {
             throw new UnauthorizedTicketAccessException();
         }
 
-        ticket.changeStatus(status);
+        Ticket updatedTicket = ticket.changeStatus(input.status());
 
-        ticketRepository.save(ticket);
+        this.ticketRepository.save(updatedTicket);
     }
 
-    private void checkIfTechnicianIsAssignedToTicket(Ticket ticket, User user) {
-        if (!ticket.technicianId().equals(user.id())) {
+    private void checkIfTechnicianIsAssignedToTicket(Ticket ticket, UUID technicianId) {
+        if (!ticket.technicianId().equals(technicianId)) {
             throw new UnauthorizedTicketAccessException();
         }
     }
-
 }
