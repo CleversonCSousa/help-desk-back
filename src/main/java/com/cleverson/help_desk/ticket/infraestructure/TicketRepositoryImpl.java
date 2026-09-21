@@ -63,6 +63,11 @@ public class TicketRepositoryImpl implements TicketRepository {
         return this.ticketJpaRepository.findById(id).map(this::mapperToDomain);
     }
 
+    @Override
+    public Optional<Ticket> findByTechnicianId(UUID id) {
+        return this.ticketJpaRepository.findByTechnicianId(id).map(this::mapperToDomain);
+    }
+
     private Ticket mapperToDomain(TicketEntity entity) {
         return new Ticket(
                 entity.getId(),

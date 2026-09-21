@@ -31,7 +31,7 @@ public record Ticket(
                 serviceId,
                 technicianId,
                 createdAt,
-                updatedAt
+                LocalDateTime.now()
         );
     }
 }

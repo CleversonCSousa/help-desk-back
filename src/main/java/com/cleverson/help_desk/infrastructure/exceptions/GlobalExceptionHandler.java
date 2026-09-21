@@ -4,8 +4,11 @@ import com.cleverson.help_desk.customer.application.exceptions.CustomerAlreadyEx
 import com.cleverson.help_desk.customer.application.exceptions.CustomerNotFoundException;
 import com.cleverson.help_desk.service.application.exceptions.ServiceAlreadyExistsException;
 import com.cleverson.help_desk.service.application.exceptions.ServiceNotFoundException;
+import com.cleverson.help_desk.ticket.application.exceptions.TicketNotFoundException;
+import com.cleverson.help_desk.ticket.application.exceptions.UnauthorizedTicketAccessException;
 import com.cleverson.help_desk.user.application.exceptions.InvalidCredentialsException;
 import com.cleverson.help_desk.user.application.exceptions.UserAlreadyExistsException;
+import com.cleverson.help_desk.user.application.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -55,5 +58,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<RestErrorMessage> noTechnicianAvailableHandler(com.cleverson.help_desk.technician.application.exceptions.NoTechnicianAvailableException exception) {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.UNPROCESSABLE_CONTENT, exception.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<RestErrorMessage> userNotFoundHandler(UserNotFoundException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<RestErrorMessage> ticketNotFoundHandler(TicketNotFoundException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(UnauthorizedTicketAccessException.class)
+    public ResponseEntity<RestErrorMessage> unauthorizedTicketAccessHandler(UnauthorizedTicketAccessException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.FORBIDDEN, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 }
