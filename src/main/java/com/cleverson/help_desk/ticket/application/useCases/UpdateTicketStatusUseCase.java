@@ -28,9 +28,9 @@ public class UpdateTicketStatusUseCase {
             throw new UnauthorizedTicketAccessException();
         }
 
-        ticket.changeStatus(status);
+        Ticket updatedTicket = ticket.changeStatus(status);
 
-        ticketRepository.save(ticket);
+        ticketRepository.save(updatedTicket);
     }
 
     private void checkIfTechnicianIsAssignedToTicket(Ticket ticket, User user) {
