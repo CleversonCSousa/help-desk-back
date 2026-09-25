@@ -50,4 +50,14 @@ public class ProfileController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/avatar")
+    public ResponseEntity<String> updateAvatar(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws Exception {
+
+        String savedFileName = updateUserAvatarUseCase.execute(userDetails.getUser().id(), file);
+        return ResponseEntity.ok(savedFileName);
+    }
 }
