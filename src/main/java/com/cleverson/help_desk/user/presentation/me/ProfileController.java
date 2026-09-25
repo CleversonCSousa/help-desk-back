@@ -37,4 +37,17 @@ public class ProfileController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/password")
+    public ResponseEntity<Void> updatePassword(
+            @RequestBody @Valid UpdateUserPasswordRequestDTO request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        updateUserPasswordUseCase.execute(userDetails.getUser().id(), new UpdateUserPasswordInput(
+                request.currentPassword(),
+                request.newPassword()
+        ));
+
+        return ResponseEntity.noContent().build();
+    }
 }
