@@ -22,3 +22,12 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.stat: DEBUG
+
+minio:
+  url: http://localhost:9000
+  access:
+    key: ${MINIO_USER:admin}
+  secret:
+    key: ${MINIO_PASSWORD:password123}
+  bucket:
+    name: help-desk-avatars
