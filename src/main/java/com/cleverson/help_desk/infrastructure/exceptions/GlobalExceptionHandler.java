@@ -7,6 +7,7 @@ import com.cleverson.help_desk.service.application.exceptions.ServiceNotFoundExc
 import com.cleverson.help_desk.ticket.application.exceptions.TicketNotFoundException;
 import com.cleverson.help_desk.ticket.application.exceptions.UnauthorizedTicketAccessException;
 import com.cleverson.help_desk.user.application.exceptions.InvalidCredentialsException;
+import com.cleverson.help_desk.user.application.exceptions.UnsupportedFileTypeException;
 import com.cleverson.help_desk.user.application.exceptions.UserAlreadyExistsException;
 import com.cleverson.help_desk.user.application.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -76,5 +77,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<RestErrorMessage> unauthorizedTicketAccessHandler(UnauthorizedTicketAccessException exception) {
         RestErrorMessage response = new RestErrorMessage(HttpStatus.FORBIDDEN, exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(UnsupportedFileTypeException.class)
+    public ResponseEntity<RestErrorMessage> unsupportedFileTypeHandler(UnsupportedFileTypeException exception) {
+        RestErrorMessage response = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }
