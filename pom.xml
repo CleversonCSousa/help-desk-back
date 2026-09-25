@@ -93,6 +93,11 @@
 			<artifactId>minio</artifactId>
 			<version>8.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>4.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
